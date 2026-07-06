@@ -37,7 +37,7 @@ jobs:
       # everything is re-fetched — slower, but self-healing and still
       # zero-config.
       - name: Restore album-art cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: art
           key: art-${{ hashFiles('songs.json') }}-${{ github.run_id }}
@@ -54,7 +54,7 @@ jobs:
       # of the cache via LRU eviction).
       - name: Save album-art cache
         if: always() && hashFiles('art/**') != ''
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6
         with:
           path: art
           key: art-${{ hashFiles('songs.json') }}-${{ github.run_id }}
