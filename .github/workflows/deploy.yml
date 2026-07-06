@@ -64,7 +64,7 @@ jobs:
       # (Settings → Pages), covered in the README. The workflow token can't
       # switch it on itself (that needs administration permissions), so until
       # it's done this step fails with a "Get Pages site failed" error.
-      - uses: actions/configure-pages@v5
+      - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
