@@ -65,7 +65,7 @@ jobs:
       # switch it on itself (that needs administration permissions), so until
       # it's done this step fails with a "Get Pages site failed" error.
       - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: dist
       - id: deploy
