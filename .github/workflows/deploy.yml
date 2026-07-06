@@ -1,0 +1,72 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one deploy at a time; don't cancel an in-progress run.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Test
+        run: npm test
+
+      # Album art is fetched from the free Deezer API during the build and
+      # cached between runs. The newest previous cache is restored and only
+      # new albums are looked up. If the cache was evicted entirely,
+      # everything is re-fetched — slower, but self-healing and still
+      # zero-config.
+      - name: Restore album-art cache
+        uses: actions/cache/restore@v4
+        with:
+          path: art
+          key: art-${{ hashFiles('songs.json') }}-${{ github.run_id }}
+          restore-keys: |
+            art-${{ hashFiles('songs.json') }}-
+            art-
+
+      - name: Build
+        run: node build.mjs
+
+      # Save the art even when the build fails partway, so covers downloaded
+      # before the failure aren't re-fetched by the next run. The run_id in
+      # the key makes every attempt save its own snapshot (old ones age out
+      # of the cache via LRU eviction).
+      - name: Save album-art cache
+        if: always() && hashFiles('art/**') != ''
+        uses: actions/cache/save@v4
+        with:
+          path: art
+          key: art-${{ hashFiles('songs.json') }}-${{ github.run_id }}
+
+      # Deploy dist/ to GitHub Pages. This needs the Pages source set to
+      # "GitHub Actions" — a one-time manual step after creating the repo
+      # (Settings → Pages), covered in the README. The workflow token can't
+      # switch it on itself (that needs administration permissions), so until
+      # it's done this step fails with a "Get Pages site failed" error.
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - id: deploy
+        uses: actions/deploy-pages@v4

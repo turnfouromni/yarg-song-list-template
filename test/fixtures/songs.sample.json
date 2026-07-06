@@ -1,0 +1,34 @@
+[
+  {
+    "Name": "Alpha </script> Song",
+    "Artist": "The Testers",
+    "Album": "First Album",
+    "Genre": "Rock",
+    "Year": "2020",
+    "songlength": 212000,
+    "Charter": "SomeCharter",
+    "chartsAvailable": 3
+  },
+  {
+    "Name": "Beta",
+    "Artist": "the testers",
+    "Album": "First Album",
+    "Genre": "Rock",
+    "Year": "2020",
+    "songlength": 185000
+  },
+  {
+    "Name": "Gamma",
+    "Artist": "The Testers",
+    "Album": "Second Album",
+    "Genre": "Pop",
+    "Year": "2021",
+    "songlength": 90000
+  },
+  {
+    "Name": "Delta",
+    "Artist": "Zeta Band",
+    "Genre": "Metal",
+    "Year": "1999"
+  }
+]

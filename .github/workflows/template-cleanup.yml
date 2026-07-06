@@ -1,0 +1,26 @@
+name: Template cleanup
+
+on:
+  push:
+    branches: [main, master]
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    # Run only in repos generated from the template, never in the template
+    # itself. The name check protects the template before its "Template
+    # repository" checkbox is enabled; the is_template check protects it
+    # after a rename.
+    if: github.repository != 'turnfouromni/yarg-song-list-template' && !github.event.repository.is_template
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Remove template housekeeping files
+        run: |
+          git rm -f .github/dependabot.yml .github/workflows/template-cleanup.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Remove template housekeeping files"
+          git push
